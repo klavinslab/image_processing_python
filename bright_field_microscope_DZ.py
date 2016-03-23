@@ -51,6 +51,8 @@ def image_processing(picname, picpath, savepath):
 			forecutoff=i
 		if(abs(nlist[i]-0.80)<0.05):#0.80 works for pic1
 			backcutoff=i
+			break
+			
 	# make segmentation using edge-detection and watershed
 	edges = sobel(original)
 	markers = np.zeros_like(original)
