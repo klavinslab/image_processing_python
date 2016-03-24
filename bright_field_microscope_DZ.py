@@ -28,9 +28,10 @@ import os, sys
 #Customerization field, change as needed
 #file handling
 #import os, sys
-
-picpath= 'C:/Users/Dianmu Zhang/OneDrive/Documents/UW work/paper/project related/image processing/sample pictures'
-savepath='C:/Users/Dianmu Zhang/OneDrive/Documents/UW work/paper/project related/image processing/sample pictures/results'
+picpath="/Users/laura/Documents/Dropbox/Ladam@Klavins/microscopy/w303a/20160322"
+savepath="/Users/laura/Documents/Dropbox/Ladam@Klavins/microscopy/w303a/20160322/Results"
+#picpath= 'C:/Users/Dianmu Zhang/OneDrive/Documents/UW work/paper/project related/image processing/sample pictures'
+#savepath='C:/Users/Dianmu Zhang/OneDrive/Documents/UW work/paper/project related/image processing/sample pictures/results'
 filelist= os.listdir(picpath)
 
 def image_processing(picname, picpath, savepath):
@@ -48,11 +49,11 @@ def image_processing(picname, picpath, savepath):
 	binlist=bins.tolist()
 	forecutoff,backcutoff=0,0
 	for i in range(len(nlist)):
-    if(abs(nlist[i]-0.01)<0.005): #0.006 works for pic1
-        forecutoff=binlist[i]
-    if(abs(nlist[i]-0.80)<0.05):#0.80 works for pic1
-        backcutoff=binlist[i]
-        break
+	    if(abs(nlist[i]-0.01)<0.005): #0.006 works for pic1
+	        forecutoff=binlist[i]
+	    if(abs(nlist[i]-0.80)<0.05):#0.80 works for pic1
+	        backcutoff=binlist[i]
+	        break
 	
 	#safty check, in case of extreme situations, assign value directly
 	if(forecutoff==0):
@@ -142,7 +143,7 @@ def image_processing(picname, picpath, savepath):
 	
 #only takes .png format file
 for fichier in filelist[:]: # filelist[:] makes a copy of filelist.
-    if not(fichier.endswith(".png")): #modify for different format here
-        filelist.remove(fichier)
-    if (fichier.endswith(".png")):
+    #if not(fichier.endswith(".png")): #modify for different format here
+    #filelist.remove(fichier)
+    if (fichier.endswith(".tif")):
         image_processing(fichier,picpath, savepath)
