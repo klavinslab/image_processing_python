@@ -46,20 +46,30 @@ def image_processing(picname, picpath, savepath):
 
 	nlist= n.tolist()
 	binlist=bins.tolist()
+	forecutoff,backcutoff=0,0
 	for i in range(len(nlist)):
-		if(abs(nlist[i]-0.01)<0.005): #0.006 works for pic1
-			forecutoff=i
-		if(abs(nlist[i]-0.80)<0.05):#0.80 works for pic1
-			backcutoff=i
-			break
-			
+    if(abs(nlist[i]-0.01)<0.005): #0.006 works for pic1
+        forecutoff=binlist[i]
+    if(abs(nlist[i]-0.80)<0.05):#0.80 works for pic1
+        backcutoff=binlist[i]
+        break
+	
+	#safty check, in case of extreme situations, assign value directly
+	if(forecutoff==0):
+		forecutoff=0.015
+		
+	if(backcutoff==0):
+		backcutoff=0.75
+		#if you'd like get a notification in extreme cases, uncomment below
+		#raise Exception('low contrast image')
+		
 	# make segmentation using edge-detection and watershed
 	edges = sobel(original)
 	markers = np.zeros_like(original)
 	foreground, background = 1, 2
 
-	markers[equalized >binlist[backcutoff]]= background
-	markers[equalized <binlist[forecutoff]]= foreground
+	markers[equalized >backcutoff]= background
+	markers[equalized <forecutoff]= foreground
 
 	ws = watershed(edges, markers)
 	seg1 = ndi.label(ws == foreground)[0]
@@ -69,7 +79,7 @@ def image_processing(picname, picpath, savepath):
 	selem = disk(10)
 	closed = skimage.morphology.closing(seg2, selem)
 	#covert closed to binary mask
-	bin_closed= closed>0
+	bin_closed= closed>1 
     
     
 	#label image
@@ -107,7 +117,7 @@ def image_processing(picname, picpath, savepath):
 	def data_filter(targetarray):
 		temparray=[]
 		for i in range(arraylength):
-			if(ratiolist[i]<0.125):
+			if(ratiolist[i]<0.125 and perimeter_list[i]<1000. and area_list[i]<10000.):
 				temparray.append(targetarray[i])
 		return np.asarray(temparray)
 		
@@ -128,6 +138,7 @@ def image_processing(picname, picpath, savepath):
 	resultfile.write('\n orientation\n')
 	resultfile.write(np.array_str(filtered_orientation))
 	resultfile.close()
+	
 	
 #only takes .png format file
 for fichier in filelist[:]: # filelist[:] makes a copy of filelist.
