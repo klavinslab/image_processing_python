@@ -120,9 +120,7 @@ def image_processing(picname, picpath, savepath):
 	resultfile.write('\n orientation\n')
 	resultfile.write(np.array_str(filtered_orientation))
 	resultfile.close()
-	import scipy.misc
-	scipy.misc.imsave(picname+'_processed.png', bin_closed)
-	
+
 #only takes .png format file
 for fichier in filelist[:]: # filelist[:] makes a copy of filelist.
     if not(fichier.endswith(".tif")): #modify for different format here
